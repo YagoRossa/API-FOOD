@@ -10,44 +10,44 @@ import { listOrders } from './app/useCases/orders/listOrders';
 import { createOrder } from './app/useCases/orders/createOrder';
 import { changeOrderStatus } from './app/useCases/orders/changeOrderStatus';
 import { cancelOrder } from './app/useCases/orders/cancelOrder';
+
 export const router = Router();
 
-//configuração do multer
+// Configuração do multer para lidar com uploads de arquivos
 const upload = multer({
-	storage: multer.diskStorage({
-		destination(req, file, callback){
-			callback(null, path.resolve(__dirname, '..', 'uploads'));
-		},
-		filename(req, file, callback){
-			callback(null, `${Date.now()}-${file.originalname}`);
-		},
-	})
-
+    storage: multer.diskStorage({
+        destination(req, file, callback) {
+            callback(null, path.resolve(__dirname, '..', 'uploads'));
+        },
+        filename(req, file, callback) {
+            callback(null, `${Date.now()}-${file.originalname}`);
+        },
+    }),
 });
 
-//List categories
+// Rota para listar categorias
 router.get('/categories', listCategories);
 
-//Create category
+// Rota para criar uma categoria
 router.post('/categories', createCategory);
 
-//List products
+// Rota para listar produtos
 router.get('/products', listProducts);
 
-//Create products
+// Rota para criar um produto (com upload de imagem)
 router.post('/products', upload.single('image'), createProduct);
 
-//Get products by category
+// Rota para listar produtos por categoria
 router.get('/categories/:categoryId/products', listProductsByCategory);
 
-//List orders
+// Rota para listar pedidos
 router.get('/orders', listOrders);
 
-//Create orders
+// Rota para criar um pedido
 router.post('/orders', createOrder);
 
-//Change orders status/ patch e nao put por ser uma alteração parcial
+// Rota para alterar o status de um pedido (uso de PATCH em vez de PUT por ser uma alteração parcial)
 router.patch('/orders/:orderId', changeOrderStatus);
 
-//Delete/cancel order
+// Rota para excluir/cancelar um pedido
 router.delete('/orders/:orderId', cancelOrder);
